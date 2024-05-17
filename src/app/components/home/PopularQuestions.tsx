@@ -1,10 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import Card from "../common/Card";
 import { useQuestions } from "@/app/utils/hooks/useQuestions";
-import Card from "../components/common/Card";
-import withPortalAppBar from "../components/common/portalLayout";
 
-const AllTimeFavoritesPage = () => {
+const PopularQuestions = () => {
   const { getPopularQuestions } = useQuestions();
   const [questions, setQuestions] = useState<Array<any>>([]);
   const handleQuestions = () => {
@@ -17,7 +16,7 @@ const AllTimeFavoritesPage = () => {
   return (
     <Card>
       <div className="flex flex-col">
-        <p className="text-3xl text-bold">All Time Favourite Questions</p>
+        <p className="text-3xl text-bold">Popular Questions</p>
         {questions?.map((question) => (
           <div>{question?.title}</div>
         ))}
@@ -26,4 +25,4 @@ const AllTimeFavoritesPage = () => {
   );
 };
 
-export default withPortalAppBar(AllTimeFavoritesPage, {});
+export default PopularQuestions;

@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import PostModel from "@/app/models/post.model";
 import { z } from "zod";
 import { connect } from "@/dbConfig";
-const { validatePost, Post } = PostModel;
+import QuestionModel from "@/app/models/question.model";
+import mongoose from "mongoose";
+const { validateQuestion, Question } = QuestionModel;
 
 connect();
-// TODO: Create mappers and dto
 
 export const POST = async (req: NextRequest) => {
   try {
     const requestBody = await req.json();
     try {
-      validatePost(requestBody);
+      validateQuestion(requestBody);
     } catch (error) {
       if (error instanceof z.ZodError) {
         return NextResponse.json(
@@ -24,11 +24,17 @@ export const POST = async (req: NextRequest) => {
         );
       }
     }
-    const post = await Post.create(requestBody);
+    const updatedRequestBody = {
+      ...requestBody,
+      topics: requestBody.topics.map(
+        (topic: any) => new mongoose.Types.ObjectId(topic)
+      ),
+    };
+    const question = await Question.create(updatedRequestBody);
     return NextResponse.json(
       {
-        message: "Post created successfully",
-        data: post,
+        message: "Question created successfully",
+        data: question,
       },
       {
         status: 201,
@@ -48,12 +54,10 @@ export const POST = async (req: NextRequest) => {
 
 export const GET = async (req: NextRequest) => {
   try {
-    console.log(req, "REQUEST PROMISE");
-    const request = await req.json();
-    console.log(request, "REQUEST");
+    const data = await Question.find({}).populate("topics");
     return NextResponse.json(
       {
-        data: "Hi",
+        data,
       },
       {
         status: 200,

@@ -1,11 +1,12 @@
-'use client';
-import React from 'react'
-import withPortalAppBar from '../components/common/portalLayout'
-import { useForm } from 'react-hook-form'
-import { loginUserValidator } from '../utils/validators/user.validator';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { commonConstants } from '../utils/constants';
-import { useRouter } from 'next/navigation';
+"use client";
+import React from "react";
+import withPortalAppBar from "../components/common/portalLayout";
+import { useForm } from "react-hook-form";
+import { loginUserValidator } from "../utils/validators/user.validator";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { commonConstants } from "../utils/constants";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -16,26 +17,25 @@ const LoginPage = () => {
     formState: { errors, touchedFields, isSubmitted },
     handleSubmit,
   } = useForm({
-        resolver: zodResolver(loginUserValidator),
-        shouldFocusError: false,
-    });
+    resolver: zodResolver(loginUserValidator),
+    shouldFocusError: false,
+  });
   const { EMAIL, EMAIL_PLACEHOLDER, PASSWORD, PASSWORD_PLACEHOLDER, LOGIN } =
     commonConstants;
 
   const onSubmit = () => {
-      fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/users/login`, {
-        method: "POST",
-        body: JSON.stringify(getValues()),
-      })
-      .then(dataPromise => {
-        dataPromise.json().then((data) => alert(data.message));
+    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/users/login`, {
+      method: "POST",
+      body: JSON.stringify(getValues()),
+    }).then((dataPromise) => {
+      dataPromise.json().then((data) => toast.success(data.message));
 
-        if(dataPromise.ok) {
-          reset();
-          router.push('/');
-        }
-      })
-  }
+      if (dataPromise.ok) {
+        reset();
+        router.push("/");
+      }
+    });
+  };
 
   return (
     <form
@@ -85,11 +85,14 @@ const LoginPage = () => {
           )}
       </div>
 
-      <button type="submit" className="mt-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+      <button
+        type="submit"
+        className="mt-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      >
         {LOGIN}
       </button>
     </form>
   );
-}
+};
 
 export default withPortalAppBar(LoginPage, {});

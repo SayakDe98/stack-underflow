@@ -1,40 +1,49 @@
-'use client';
-import { zodResolver } from '@hookform/resolvers/zod';
-import React from 'react'
-import { useForm } from 'react-hook-form';
-import { userValidator } from '../utils/validators/user.validator';
-import { commonConstants } from '../utils/constants';
-import withPortalAppBar from '../components/common/portalLayout';
+"use client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { userValidator } from "../utils/validators/user.validator";
+import { commonConstants } from "../utils/constants";
+import withPortalAppBar from "../components/common/portalLayout";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
-    const { 
-        register,
-        handleSubmit,
-        formState: { errors, touchedFields, isSubmitted },
-        getValues,
-        reset,
-    } = useForm({
-        resolver: zodResolver(userValidator),
-        shouldFocusError: false,
-    });
-    const { FIRST_NAME, FIRST_NAME_PLACEHOLDER, LAST_NAME, LAST_NAME_PLACEHOLDER, EMAIL, EMAIL_PLACEHOLDER, PASSWORD, PASSWORD_PLACEHOLDER, CONTACT_NUMBER, CONTACT_NUMBER_PLACEHOLDER, REGISTER } =
-      commonConstants;
-       const onSubmit = () => {
-          fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/users/register`, {
-            method: "POST",
-            body: JSON.stringify(getValues()),
-          }).then((dataPromise) => {
-            if (dataPromise.ok) {
-              reset();
-            }
-            dataPromise.json().then((data) => { 
-              alert(data.message); 
-              // if(dataPromise.ok) {
-              //   sessionStorage.setItem("token", data?.token);
-              // }
-          });
-          });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, touchedFields, isSubmitted },
+    getValues,
+    reset,
+  } = useForm({
+    resolver: zodResolver(userValidator),
+    shouldFocusError: false,
+  });
+  const {
+    FIRST_NAME,
+    FIRST_NAME_PLACEHOLDER,
+    LAST_NAME,
+    LAST_NAME_PLACEHOLDER,
+    EMAIL,
+    EMAIL_PLACEHOLDER,
+    PASSWORD,
+    PASSWORD_PLACEHOLDER,
+    CONTACT_NUMBER,
+    CONTACT_NUMBER_PLACEHOLDER,
+    REGISTER,
+  } = commonConstants;
+  const onSubmit = () => {
+    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/users/register`, {
+      method: "POST",
+      body: JSON.stringify(getValues()),
+    }).then((dataPromise) => {
+      if (dataPromise.ok) {
+        reset();
       }
+      dataPromise.json().then((data) => {
+        toast.success(data.message);
+      });
+    });
+  };
 
   return (
     <form
@@ -157,6 +166,6 @@ const LoginPage = () => {
       </button>
     </form>
   );
-}
+};
 
 export default withPortalAppBar(LoginPage, {});

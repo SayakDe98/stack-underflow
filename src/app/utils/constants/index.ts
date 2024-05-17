@@ -1,7 +1,5 @@
 export const publicPaths = ["/", "/login", "/register"];
 
-export const adminPaths = ["/topics/create"]
-
 export const commonConstants = {
   APP_NAME: "Stack Underflow",
   FIRST_NAME: "First Name",
@@ -16,4 +14,6 @@ export const commonConstants = {
   PASSWORD_PLACEHOLDER: "Enter Password",
   REGISTER: "Register",
   LOGIN: "Login",
+  TITLE: "Title",
+  MESSAGE: "Message",
 };

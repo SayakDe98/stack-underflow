@@ -24,6 +24,6 @@ export const userValidator = z.object({
 });
 
 export const loginUserValidator = z.object({
-  email: z.string({ required_error: "Email is required"}),
-  password: z.string({ required_error: "Password is required"})
+  email: z.string({ required_error: "Email is required" }),
+  password: z.string({ required_error: "Password is required" }),
 });

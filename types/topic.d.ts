@@ -1,8 +1,5 @@
 export interface TopicType {
-  name: string;
-  // visits?: number;
+  _id: string;
   description?: string;
-  // dailyVisits?: number;
-  // weeklyVisits?: number;
-  // monthlyVisits?: number;
+  name?: string;
 }

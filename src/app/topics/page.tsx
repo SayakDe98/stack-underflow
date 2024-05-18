@@ -32,7 +32,7 @@ const TopicsPage = () => {
           </button>
         </Link>
         <div></div>
-        <div className="grid grid-cols-2">
+        <div className="grid grid-cols-2 gap-2">
           {topicsData?.map(({ name, description, _id }: TopicType) => (
             <TopicCard
               key={_id}

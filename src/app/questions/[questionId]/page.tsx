@@ -1,5 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
+import "react-toastify/dist/ReactToastify.css";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 import { useQuestions } from "@/app/utils/hooks/useQuestions";
@@ -10,10 +11,11 @@ import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { answerValidator } from "@/app/utils/validators/answer.validator";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { getCookie } from "cookies-next";
 import withPortalAppBar from "@/app/components/common/portalLayout";
 import jwt from "jsonwebtoken";
+import Card from "@/app/components/common/Card";
 
 type CommentToSubmit = {
   value: string;
@@ -168,8 +170,8 @@ const Question = () => {
   };
 
   return (
-    <div>
-      <div className="flex justify-between p-2">
+    <div className="p-5">
+      <div className="flex justify-between p-1">
         <div className="text-3xl">{question?.title}</div>
         <Link href="/questions/create">
           <button className="border-solid border-2 p-2 bg-blue-700 text-white">
@@ -178,10 +180,16 @@ const Question = () => {
         </Link>
       </div>
       <hr />
-      <div className="flex">
+      <div className="flex my-1">
         <div className="flex flex-col justify-center items-center">
           <div
-            className={`border border-solid rounded-full p-1 cursor-pointer ${
+            className={`border border-solid rounded-full p-1 text-${
+              question?.upVotes?.findIndex(
+                (vote) => vote.user._id === userId
+              ) !== -1
+                ? "white"
+                : "black"
+            } cursor-pointer ${
               question?.upVotes?.findIndex(
                 (vote) => vote.user._id === userId
               ) !== -1
@@ -201,7 +209,13 @@ const Question = () => {
               (question?.downVotes?.length || 0)}
           </div>
           <div
-            className={`border border-solid rounded-full p-1 cursor-pointer ${
+            className={`border border-solid rounded-full p-1 text-${
+              question?.downVotes?.findIndex(
+                (vote) => vote.user._id === userId
+              ) !== -1
+                ? "white"
+                : "black"
+            } cursor-pointer ${
               question?.downVotes?.findIndex(
                 (vote) => vote.user._id === userId
               ) !== -1
@@ -217,7 +231,7 @@ const Question = () => {
             &#x25bc;
           </div>
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col ml-2">
           <div
             dangerouslySetInnerHTML={{
               __html: question?.description || "",
@@ -233,65 +247,71 @@ const Question = () => {
         </div>
       </div>
 
-      <div>
-        {question?.answers?.length} Answers
-        {
-          <div>
-            {question?.answers?.map((answer) => {
-              console.log(answer, "ans");
-              return (
-                <div className="flex flex-col">
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: answer?.message || "",
-                    }}
-                  />
-                  <hr />
-                  Things tried till now and my expectations:
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: answer?.user.firstName || "",
-                    }}
-                  />
-                  {answer?.comments?.map((comment: any) => (
-                    <div>
-                      <div>{comment?.message}</div>
-                      <div>
-                        {comment?.user?.firstName +
-                          " " +
-                          comment?.user?.lastName}
-                      </div>
-                      <div>{new Date(comment?.timestamp).toString()}</div>
-                    </div>
-                  ))}
-                  <div>
-                    Add Comment:
-                    <input
-                      value={commentToSubmit?.value}
-                      onChange={(e) =>
-                        setCommentToSubmit({
-                          value: e.target.value,
-                          answer,
-                        })
-                      }
+      <Card>
+        <>
+          {question?.answers?.length} Answers
+          {
+            <div>
+              {question?.answers?.map((answer) => {
+                console.log(answer, "ans");
+                return (
+                  <div className="flex flex-col">
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: answer?.message || "",
+                      }}
                     />
-                  </div>
-                  <div>
-                    <button
-                      className="border-solid border-2 p-2 bg-blue-700 text-white"
-                      onClick={submitCommentHandler}
-                    >
-                      Add comment
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        }
-      </div>
+                    <hr />
+                    Things tried till now and my expectations:
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: answer?.user.firstName || "",
+                      }}
+                    />
+                    {answer?.comments?.map((comment: any) => (
+                      <div>
+                        <div>{comment?.message}</div>
+                        <div>
+                          {comment?.user?.firstName +
+                            " " +
+                            comment?.user?.lastName}
+                        </div>
+                        <div>{new Date(comment?.timestamp).toString()}</div>
+                      </div>
+                    ))}
+                    <div className="flex flex-col gap-1">
+                      Add Comment:
+                      <div>
 
-      <div>
+                      <input
+                        value={commentToSubmit?.value}
+                        className="border"
+                        onChange={(e) =>
+                          setCommentToSubmit({
+                            value: e.target.value,
+                            answer,
+                          })
+                        }
+                      />
+                      </div>
+                    </div>
+                    <div>
+                      <button
+                        className="mt-1 border-solid border-2 p-2 bg-blue-700 text-white"
+                        onClick={submitCommentHandler}
+                      >
+                        Add comment
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          }
+        </>
+      </Card>
+
+      <div className="my-2">
         <div className="text-2xl">Your Answer</div>
         <form onSubmit={handleSubmit(onSubmit)}>
           {editorLoaded && (
@@ -317,13 +337,14 @@ const Question = () => {
               </span>
             )}
           <button
-            className="border-solid border-2 p-2 bg-blue-700 text-white"
+            className="mt-1 border-solid border-2 p-2 bg-blue-700 text-white"
             type="submit"
           >
             Post Your Answer
           </button>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 };

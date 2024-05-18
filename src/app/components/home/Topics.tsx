@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Card from "../common/Card";
 import { useTopics } from "@/app/utils/hooks/useTopics";
+import Link from "next/link";
 
 const Topics = () => {
   const { getTopics } = useTopics();
@@ -14,14 +15,16 @@ const Topics = () => {
     handleGetTopics();
   }, []);
   return (
-    <Card>
-      <div>
-        <div className="text-3xl text-bold">Topics</div>
-        {topicsData?.map((topic) => (
-          <div>{topic?.name}</div>
-        ))}
-      </div>
-    </Card>
+    <Link href="/topics">
+      <Card>
+        <div>
+          <div className="text-3xl text-bold">Topics</div>
+          {topicsData?.map((topic) => (
+            <div>{topic?.name}</div>
+          ))}
+        </div>
+      </Card>
+    </Link>
   );
 };
 

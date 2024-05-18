@@ -29,7 +29,7 @@ const Question = () => {
             </button>
           </Link>
         </div>
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center gap-2">
           {questions?.map(
             ({
               _id,

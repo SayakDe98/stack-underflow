@@ -8,8 +8,14 @@ export const GET = async (_: NextRequest) => {
       {
         $project: {
           title: 1,
+          description: 1,
           totalVotes: {
-            $subtract: [{ $size: "$upVotes" }, { $size: "$downVotes" }],
+            $add: [
+              { $size: "$upVotes" },
+              { $size: "$downVotes" },
+              { $sum: "$answers.upVotes" },
+              { $sum: "$answers.downVotes" },
+            ],
           },
         },
       },

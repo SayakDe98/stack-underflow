@@ -4,6 +4,7 @@ import { useTopics } from "@/app/utils/hooks/useTopics";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { QuestionType } from "../../../../types/question";
+import withPortalAppBar from "@/app/components/common/portalLayout";
 
 const Topic = () => {
   const params = useParams();
@@ -54,4 +55,4 @@ const Topic = () => {
   );
 };
 
-export default Topic;
+export default withPortalAppBar(Topic, {});

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useQuestions } from "@/app/utils/hooks/useQuestions";
 import Card from "../components/common/Card";
 import withPortalAppBar from "../components/common/portalLayout";
+import Link from "next/link";
 
 const AllTimeFavoritesPage = () => {
   const { getPopularQuestions } = useQuestions();
@@ -19,7 +20,28 @@ const AllTimeFavoritesPage = () => {
       <div className="flex flex-col">
         <p className="text-3xl text-bold">All Time Favourite Questions</p>
         {questions?.map((question) => (
-          <div>{question?.title}</div>
+          <Link href={`/questions/${question._id}`}>
+            <Card
+              styles={{
+                mb: 2,
+              }}
+            >
+              <>
+                <div className="inline-flex">
+                  <div className="bg-blue-400 text-white px-2">
+                    {question?.title}
+                  </div>
+                </div>
+
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: question?.description,
+                  }}
+                />
+                <div>{question?.totalVotes} votes</div>
+              </>
+            </Card>
+          </Link>
         ))}
       </div>
     </Card>
